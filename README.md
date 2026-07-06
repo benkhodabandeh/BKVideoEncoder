@@ -41,9 +41,9 @@ Wrap x264, x265, and libfdk-aac into preset-based workflows — no CLI gymnastic
 
 Grab the latest portable archive for your platform from the [Releases page](https://github.com/benkhodabandeh/BKVideoEncoder/releases).
 
-- **Windows**: `BKVideoEncoder.*.win64.zip` → extract and run `BKVideoEncoder.exe`
-- **Linux**: `BKVideoEncoder.*.linux64.tar.gz` → extract and run `./BKVideoEncoder`
-- **macOS**: `BKVideoEncoder.*.macos64.tar.gz` → extract and run `./BKVideoEncoder`
+- **Windows**: `BKVideoEncoder.*.windows.7z` → extract and run `BKVideoEncoder.exe`
+- **Linux**: `BKVideoEncoder.*.linux.7z` → extract and run `./BKVideoEncoder`
+- **macOS**: `BKVideoEncoder.*.macos.7z` → extract and run `./BKVideoEncoder`
 
 No installation required. The FFmpeg binary is bundled.
 
@@ -129,5 +129,8 @@ for libfdk-aac). See the `licenses/` directory for details.
 
 ## Author
 
-**Benyamin Khodabandeh**  
+**Benyamin Khodabandeh** — Director, cinematographer, and the mind behind this encoder.  
 © 2018–2026
+
+**Find me online**  
+[Website](https://benyaminkhodabandeh.ir/) · [Instagram](https://instagram.com/benilorn) · [FilmFreeway](https://filmfreeway.com/benyaminkhodabandeh) · [Letterboxd](https://letterboxd.com/benartic/) · [IMDb](https://www.imdb.com/name/nm10390589/) · [Email](mailto:benyaminkhodabandeh@icloud.com)
