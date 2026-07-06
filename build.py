@@ -80,7 +80,7 @@ def main():
         else:
             archive_path = shutil.make_archive(str(DIST / arc_name), "gztar", root_dir=str(tmp))
 
-        print(f"✓ Release: {archive_path}")
+        print(f"Release: {archive_path}")
 
 
 if __name__ == "__main__":
