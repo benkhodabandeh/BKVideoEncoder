@@ -1,7 +1,7 @@
 # Ben. Khodabandeh Video Encoder
 
 **A professional video encoding toolbox powered by FFmpeg.**  
-Wrap x264, x265, and libfdk-aac into preset-based workflows — no CLI gymnastics.
+Wrap x264, x265, and aac into preset-based workflows — no CLI gymnastics.
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-GPLv3-green) ![Platform](https://img.shields.io/badge/platform-win%20%7C%20linux%20%7C%20macos-lightgrey)
 
@@ -32,6 +32,7 @@ Wrap x264, x265, and libfdk-aac into preset-based workflows — no CLI gymnastic
 - **Metadata tagging** — embed title, artist, year, syndicate into output files
 - **Audio mixdown** — dual-track: original multichannel + stereo downmix
 - **Scene detection** — via PySceneDetect or FFmpeg
+- **Crop detection** — auto-detect letterbox/pillarbox or choose from common aspect ratios
 
 ---
 
