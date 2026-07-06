@@ -8,7 +8,7 @@ Assumes:
 Usage:
   python build.py
 """
-import platform, shutil, subprocess, sys, tempfile
+import platform, shutil, subprocess, sys, tempfile  # fmt: skip
 from pathlib import Path
 
 ROOT = Path(__file__).parent.resolve()
@@ -74,11 +74,9 @@ def main():
             elif src.exists():
                 shutil.copy2(src, tmp / item)
 
-        # Create the archive
-        if system == "Windows":
-            archive_path = shutil.make_archive(str(DIST / arc_name), "zip", root_dir=str(tmp))
-        else:
-            archive_path = shutil.make_archive(str(DIST / arc_name), "gztar", root_dir=str(tmp))
+        # Create the archive (7z for smallest size — mx=9 is ultra compression)
+        archive_path = str(DIST / f"{arc_name}.7z")
+        subprocess.check_call(["7z", "a", "-mx=9", archive_path, "."], cwd=str(tmp))
 
         print(f"Release: {archive_path}")
 
