@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""Cross‑platform build script for Ben. Khodabandeh Video Encoder.
-
-Assumes:
-  - Python dependencies already installed (pip install -r requirements.txt pyinstaller)
-  - bin/ is populated with FFmpeg + shared libs (or src/vmaf_v0.6.1.json at minimum)
-
-Usage:
-  python build.py
-"""
-import platform, shutil, subprocess, sys, tempfile  # fmt: skip
+import platform, shutil, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.resolve()
@@ -31,54 +22,61 @@ def main():
 
     sep = ";" if system == "Windows" else ":"
 
+    exclude = [
+        "torch", "torchvision", "torchaudio",
+        "onnxruntime", "onnx", "onnxscript",
+        "pandas", "pyarrow", "scipy",
+        "matplotlib", "av",
+        "notebook", "ipython", "jupyter",
+        "tensorflow", "keras",
+        "transformers", "datasets",
+        "sympy", "networkx",
+    ]
+
     cmd = [
-        "pyinstaller", "--noconfirm", "--onefile",
+        "pyinstaller", "--noconfirm", "--onedir",
         "--name", NAME,
         "--icon", str(ROOT / "src" / "icon.ico"),
         "--add-data", f"{ROOT / 'src' / 'icon.ico'}{sep}bin",
         "--add-data", f"{ROOT / 'src' / 'wgelogo.png'}{sep}bin",
         "--add-data", f"{ROOT / 'src' / 'vmaf_v0.6.1.json'}{sep}bin",
+        "--paths", str(ROOT / "src"),
         "--hidden-import", "scenedetect",
+        *(f"--exclude-module={m}" for m in exclude),
         str(ROOT / "src" / "app.py"),
     ]
     cmd.insert(3, "--windowed" if system == "Windows" else "--noconsole")
 
-    # Bundle all of bin/ into the executable
-    if BIN.is_dir():
-        for f in sorted(BIN.iterdir()):
-            if f.is_file() and f.suffix.lower() in (".exe", ".dll", ".so", ".dylib", ".json", ""):
-                idx = next(i for i, v in enumerate(cmd) if v == "--hidden-import")
-                cmd[idx:idx] = ["--add-data", f"{f}{sep}bin"]
-
+    # Run PyInstaller; onedir creates DIST/NAME/{exe, _internal/}
     subprocess.check_call(cmd, cwd=str(ROOT))
 
-    # ---- Assemble platform-specific release archive ----
-    exe_name = f"{NAME}.exe" if system == "Windows" else NAME
+    # ---- Assemble platform-specific release ----
+    out_dir = DIST / NAME
     arc_name = f"{NAME}.{VER}.{system.lower()}"
 
-    with tempfile.TemporaryDirectory() as _tmp:
-        tmp = Path(_tmp)
+    # Copy FFmpeg bundle alongside the binary
+    if BIN.is_dir():
+        shutil.copytree(BIN, out_dir / "bin", dirs_exist_ok=True)
 
-        # Copy the built binary
-        shutil.copy2(DIST / exe_name, tmp / exe_name)
+    # Copy licenses + README
+    for item in ["licenses", "README.md"]:
+        src = ROOT / item
+        if src.is_dir():
+            shutil.copytree(src, out_dir / item, dirs_exist_ok=True)
+        elif src.exists():
+            shutil.copy2(src, out_dir / item)
 
-        # Copy FFmpeg bundle
-        if BIN.is_dir():
-            shutil.copytree(BIN, tmp / "bin", dirs_exist_ok=True)
+    # Create 7z archive of the entire out_dir (includes NAME/ as root)
+    archive_path = str(DIST / f"{arc_name}.7z")
+    _7z = shutil.which("7z") or shutil.which("7za") or shutil.which("7zz")
+    if not _7z:
+        _7z = r"C:\Program Files\7-Zip\7z.exe"  # common Windows path
+    subprocess.check_call(
+        [_7z, "a", "-mx=9", archive_path, out_dir.name],
+        cwd=str(DIST),
+    )
 
-        # Copy licenses + README
-        for item in ["licenses", "README.md"]:
-            src = ROOT / item
-            if src.is_dir():
-                shutil.copytree(src, tmp / item, dirs_exist_ok=True)
-            elif src.exists():
-                shutil.copy2(src, tmp / item)
-
-        # Create the archive (7z for smallest size — mx=9 is ultra compression)
-        archive_path = str(DIST / f"{arc_name}.7z")
-        subprocess.check_call(["7z", "a", "-mx=9", archive_path, "."], cwd=str(tmp))
-
-        print(f"Release: {archive_path}")
+    print(f"Release: {archive_path}")
 
 
 if __name__ == "__main__":

@@ -49,6 +49,8 @@ def from_brew():
         if src:
             shutil.copy2(src, BIN / exe)
             print(f"  {exe}")
+    # ffplay not needed by the app, but harmless to include
+    # ponytail: skip deleting it — 0.1 MB is not worth the complexity
 
 
 def main():
