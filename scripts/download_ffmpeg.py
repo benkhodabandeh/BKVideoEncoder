@@ -13,7 +13,7 @@ BIN.mkdir(exist_ok=True)
 BUILDS = {
     "Windows": ("ffmpeg-n7.1-latest-win64-gpl-7.1.zip",        "zip"),
     "Linux":   ("ffmpeg-n7.1-latest-linux64-gpl-7.1.tar.xz",   "tar.xz"),
-    "Darwin":  ("ffmpeg-n7.1-latest-macos64-gpl-7.1.tar.xz",   "tar.xz"),
+    "Darwin":  ("ffmpeg-master-latest-macos64-gpl.tar.xz",      "tar.xz"),
 }
 BASE = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
 

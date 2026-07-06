@@ -5,6 +5,20 @@ Wrap x264, x265, and libfdk-aac into preset-based workflows — no CLI gymnastic
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-GPLv3-green) ![Platform](https://img.shields.io/badge/platform-win%20%7C%20linux%20%7C%20macos-lightgrey)
 
+<p align="center">
+  <img src="logo.png" alt="BK Video Encoder" width="128">
+</p>
+
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/main_window.png" alt="Main window" width="45%">
+  <img src="screenshots/presets.png" alt="Preset selection" width="45%">
+</p>
+<p align="center">
+  <img src="screenshots/qc_tool.png" alt="VMAF Quality Control Tool" width="60%">
+</p>
+
 ---
 
 ## Features
