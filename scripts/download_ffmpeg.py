@@ -1,60 +1,65 @@
 #!/usr/bin/env python3
-"""Download FFmpeg from BtbN releases for the current platform.
+"""Download FFmpeg for the current platform.
 
-Called by CI before build.py. Populates bin/ with FFmpeg executables
-and shared libraries for the host platform.
+Windows/Linux: extracts from BtbN FFmpeg-Builds release archive.
+macOS:         installs via Homebrew (pre-installed on GitHub runners).
 """
-import os, platform, shutil, sys, urllib.request, zipfile, tarfile
+import os, platform, shutil, subprocess, sys, urllib.request, zipfile, tarfile
 from pathlib import Path
 
 BIN = Path(__file__).resolve().parent.parent / "bin"
 BIN.mkdir(exist_ok=True)
 
+BTBN = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
 BUILDS = {
-    "Windows": ("ffmpeg-n7.1-latest-win64-gpl-7.1.zip",        "zip"),
-    "Linux":   ("ffmpeg-n7.1-latest-linux64-gpl-7.1.tar.xz",   "tar.xz"),
-    "Darwin":  ("ffmpeg-master-latest-macos64-gpl.tar.xz",      "tar.xz"),
+    "Windows": ("ffmpeg-n7.1-latest-win64-gpl-7.1.zip",      "zip"),
+    "Linux":   ("ffmpeg-n7.1-latest-linux64-gpl-7.1.tar.xz", "tar.xz"),
 }
-BASE = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
 
 
-def main():
-    system = platform.system()
-    b = BUILDS.get(system)
-    if not b:
-        print(f"Unsupported platform: {system}", file=sys.stderr)
-        sys.exit(1)
-
-    fname, _fmt = b
-    url = f"{BASE}/{fname}"
+def from_btbn(system):
+    fname, _ = BUILDS[system]
+    url = f"{BTBN}/{fname}"
     archive = BIN.parent / fname
-
     print(f"Downloading {url} …")
     urllib.request.urlretrieve(url, archive)
-
-    print("Extracting …")
-    # Derive the top-level dir name inside the archive
     inner = fname.replace(".tar.xz", "").replace(".zip", "")
-    dst = BIN.parent / inner
-
+    print("Extracting …")
     if fname.endswith(".zip"):
         with zipfile.ZipFile(archive) as z:
             z.extractall(path=BIN.parent)
     else:
         with tarfile.open(archive) as t:
             t.extractall(path=BIN.parent)
-
-    # Copy everything from the extracted bin/ to our bin/
-    src_dir = dst / "bin"
-    if src_dir.is_dir():
-        for f in src_dir.iterdir():
+    src = BIN.parent / inner / "bin"
+    if src.is_dir():
+        for f in src.iterdir():
             if f.is_file():
                 shutil.copy2(f, BIN / f.name)
                 print(f"  {f.name}")
-
-    # Cleanup
-    shutil.rmtree(dst, ignore_errors=True)
+    shutil.rmtree(BIN.parent / inner, ignore_errors=True)
     archive.unlink()
+
+
+def from_brew():
+    print("Installing FFmpeg via Homebrew …")
+    subprocess.run(["brew", "install", "ffmpeg"], check=True)
+    for exe in ("ffmpeg", "ffprobe", "ffplay"):
+        src = shutil.which(exe)
+        if src:
+            shutil.copy2(src, BIN / exe)
+            print(f"  {exe}")
+
+
+def main():
+    system = platform.system()
+    if system in BUILDS:
+        from_btbn(system)
+    elif system == "Darwin":
+        from_brew()
+    else:
+        print(f"Unsupported platform: {system}", file=sys.stderr)
+        sys.exit(1)
     print("Done.")
 
 
