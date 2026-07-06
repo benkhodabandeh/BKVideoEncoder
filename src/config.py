@@ -1,0 +1,329 @@
+# config.py
+"""
+Configuration Constants for Ben. Khodabandeh Video Encoder
+
+This module defines:
+  - Application metadata (name, version, copyright)
+  - Default paths and filenames for logs, temporary files, and app settings.
+  - Highly detailed, source-aware preset definitions for software encoding.
+  - Constants for specialized workflows like "The Heist" and "The Job".
+  - GUI appearance and other system settings.
+"""
+
+import os
+import logging
+import platform
+from datetime import datetime
+
+# --- Application Information ---
+APP_NAME = "Ben. Khodabandeh Video Encoder"
+APP_VERSION = "2026.7.7"
+COPYRIGHT_TEXT = f"© BENYAMIN KHODABANDEH 2018 - {datetime.now().year}"
+UPDATE_URL = "https://api.github.com/repos/benkhodabandeh/BKVideoEncoder/releases/latest"
+
+
+# --- Quality Level Configuration ---
+class Quality:
+    """Encapsulates quality level settings."""
+    LEVELS = ["Lean", "Standard", "Prime Cut"]
+    DEFAULT_LEVEL = "Standard"
+
+# --- UI Theme & Appearance (NEW MATERIAL DESIGN-INSPIRED THEME) ---
+class Theme:
+    """A professional, modern theme inspired by Google's Material Design."""
+    # Color Palette
+    PRIMARY = "#0097A7"              # Bright Cyan (Primary Action)
+    PRIMARY_HOVER = "#007F8C"
+    SECONDARY = "#455A64"            # Blue Grey (Secondary Action / Tonal Buttons)
+    SECONDARY_HOVER = "#5B727E"
+    
+    BACKGROUND = "#1A1C1E"           # Near-black for the main window
+    SURFACE = "#24282B"              # Dark grey for panels and cards
+    SURFACE_LIGHT = "#2F3438"        # Lighter grey for interactive surfaces
+    
+    TEXT_PRIMARY = "#E3E3E3"         # Soft white for primary text
+    TEXT_SECONDARY = "#A9B4BB"       # Muted grey for hints and secondary info
+    TEXT_ON_PRIMARY = "#FFFFFF"      # White text for primary buttons
+
+    ERROR = "#CF6679"                # Material-compliant error color for dark themes
+    SUCCESS = "#66BB6A"              # A clear, standard green
+
+    # Typography
+    _sys = platform.system()
+    FONT_FAMILY = "Segoe UI" if _sys == "Windows" else "SF Pro Display" if _sys == "Darwin" else "Noto Sans"
+    FONT_H1 = (FONT_FAMILY, 24, "bold")
+    FONT_H2 = (FONT_FAMILY, 16, "bold")
+    FONT_SUBTITLE = (FONT_FAMILY, 14, "bold")
+    FONT_BODY = (FONT_FAMILY, 14)
+    FONT_BUTTON = (FONT_FAMILY, 14, "bold")
+    FONT_SMALL = (FONT_FAMILY, 12)
+    FONT_MONO = "Consolas" if platform.system() == "Windows" else "Menlo"
+    
+    # Dimensions
+    CORNER_RADIUS = 12               # Softer, more modern corners
+    PADDING = 15
+    PADDING_SMALL = 8
+
+
+# --- File/Folder Structure & System Settings ---
+LOG_FOLDER_NAME = "BKVideoEncoder_Logs"
+APP_SETTINGS_FILENAME = "wge_settings.json"
+TEMP_DIR_BASE = f"{APP_NAME.replace(' ', '_')}_Temp"
+LOGO_FILENAME = "wgelogo.png"
+PASSLOG_FILENAME_BASE = "wge_passlog"
+
+
+# --- Logging Configuration ---
+LOG_LEVEL = logging.INFO
+LOG_FILE_RETENTION_DAYS = 7
+LOG_FORMAT = '%(asctime)s - %(levelname)s - [%(module)s:%(funcName)s:%(lineno)d] - %(message)s'
+LOG_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+
+# --- Source Material Options ---
+SOURCE_MATERIAL_OPTIONS = {
+    "clean": "Clean",
+    "modern": "Modern",
+    "film": "Vintage",
+    "animation": "Animation"
+}
+DEFAULT_SOURCE_MATERIAL = "modern"
+SOURCE_COMPLEXITY_THRESHOLDS = {"clean": 0.08, "film": 0.20}
+SCENEDETECT_THRESHOLDS = {"clean": 26.0, "modern": 27.5, "film": 30.0, "animation": 26.0}
+
+
+# --- FFmpeg Executable Names ---
+FFMPEG_EXE_BASE = "ffmpeg"
+FFPROBE_EXE_BASE = "ffprobe"
+def get_platform_exe_name(base_name: str) -> str:
+    """Returns the executable name with a .exe extension on Windows."""
+    return f"{base_name}.exe" if platform.system() == "Windows" else base_name
+FFMPEG_EXE = get_platform_exe_name(FFMPEG_EXE_BASE)
+FFPROBE_EXE = get_platform_exe_name(FFPROBE_EXE_BASE)
+
+
+# --- Metadata Configuration ---
+METADATA_USER_FIELDS = ["title", "artist", "year", "syndicate"]
+
+# --- Analysis and Still Settings ---
+CROP_DETECT_DURATION = 10
+CROP_DETECT_OPTIONS = [
+    "None", "Auto-Detect", "1.33 (4:3)", "1.66 (Gunnar)",
+    "1.77 (16:9)", "1.85 (Theatrical)", "2.00", "2.35 (Anamorphic)",
+    "2.39 (Anamorphic)", "Custom"
+]
+DEFAULT_CROP_MODE = "Auto-Detect"
+NUM_PREVIEW_STILLS = 10
+PREVIEW_STILL_EXTENSION = ".jpg"
+PREVIEW_STILL_QUALITY = 4
+FINAL_STILL_EXTENSION = ".png" # Final stills are PNG for lossless quality
+NUM_PALETTE_COLORS = 8
+PALETTE_HEIGHT_RATIO = 0.08
+
+
+# --- VMAF Configuration ---
+VMAF_MODEL_FILENAME = "vmaf_v0.6.1.json"
+VMAF_NUM_THREADS = 0  # 0 means auto-detect
+VMAF_SCORE_GUIDE = {
+    (95, 101): ("✅", "Prime Cut! (Looks just like the original)", Theme.SUCCESS),
+    (90, 95): ("👍", "Good Stuff (Hard to tell the difference)", "#82C04F"),
+    (80, 90): ("👌", "Decent (A bit rough around the edges)", "#A5D6A7"),
+    (60, 80): ("🤔", "Rough (Needs some work)", "#FFB74D"),
+    (0, 60):  ("❌", "Forget About It! (A real mess)", Theme.ERROR)
+}
+
+
+# --- System & Filter Settings ---
+AUDIO_RESAMPLE_FILTER = 'aresample=resampler=soxr:out_sample_rate=48000'
+SCALING_FILTER_FLAGS = 'flags=lanczos+accurate_rnd+full_chroma_int'
+FFMPEG_PROGRESS_INTERVAL_SEC = 0.25 # Reduced update frequency for less noise
+PERFORMANCE_LOG_FILENAME = "wge_perf.json"
+
+
+# =================================================================================
+# ADVANCED ENCODING PRESETS
+# =================================================================================
+
+STANDARD_PRESETS = {
+    # 'The Finisher' - High-quality, compatible, CRF-based master. Reasonably fast.
+    "THE_CAPO": {
+        "name": "The Capo", "output_name": "Theatrical", "container": ".mp4",
+        "video_codec": "libx264", "rate_control_mode": "crf", "target_resolution_name": "FHD",
+        "audio_codec": "libfdk_aac", "audio_options": "-vbr 5",
+        "crf_levels": {"Lean": 20, "Standard": 18, "Prime Cut": 16},
+        "base_options": {"preset": "slow", "profile:v": "high", "level": "4.2", "tune": "film"},
+        "pix_fmt_8bit": "yuv420p",
+        "source_material_tuning": {
+            "common": "keyint=360:min-keyint=1",
+            "clean":   "-x264-params {common}:bframes=8:ref=8:aq-mode=1:psy-rd=0.8:0.1:deblock=-1,-1:mbtree=1:qcomp=0.9:merange=48",
+            "modern":  "-x264-params {common}:bframes=8:ref=8:aq-mode=1:aq-strength=1.1:psy-rd=1.0:0.15:deblock=-1,-1:mbtree=1:qcomp=0.9:merange=48",
+            "film":    "-x264-params {common}:bframes=8:ref=8:aq-mode=1:aq-strength=1.2:psy-rd=1.1:0.2:no-deblock=1:mbtree=1:qcomp=0.9:merange=48",
+            "animation": "-x264-params {common}:bframes=10:ref=10:deblock=1,1:psy-rd=0.4:0.0:aq-mode=1:aq-strength=0.7:mbtree=1:qcomp=0.9:merange=48"
+        }
+    },
+    # 'The Archivist' - Pushes x264 to its absolute limits for maximum quality/bitrate. VERY SLOW.
+    "THE_SOLDIER": {
+        "name": "The Soldier", "output_name": "Web.x264", "container": ".mp4",
+        "video_codec": "libx264", "rate_control_mode": "2pass_abr",
+        "video_kbps_levels": {"Lean": 2500, "Standard": 3500, "Prime Cut": 5000},
+        "bufsize_kb_multiplier": 2.0, "target_resolution_name": "FHD",
+        "audio_codec": "libfdk_aac", "audio_options": "-vbr 4",
+        "base_options": {"preset": "veryslow", "profile:v": "high"},
+        "pix_fmt_8bit": "yuv420p",
+        "size_denoise_filter": "nlmeans=s=1:p=3:r=5", "size_sharpen_filter": "cas=strength=0.1",
+        "denoise_filter": "nlmeans=s=1:p=3:r=5", "sharpen_filter": "cas=strength=0.1",
+        "source_material_tuning": {
+            "common": "keyint=360:min-keyint=1:subme=11:merange=48:trellis=2:b-adapt=2:bframes=16:ref=16:rc-lookahead=60:qcomp=0.9:mbtree=1",
+            "clean":   "-tune fastdecode -x264-params {common}:aq-mode=3:psy-rd=1.0:0.15:deblock=-1,-1",
+            "modern":  "-tune fastdecode -x264-params {common}:aq-mode=3:aq-strength=1.1:psy-rd=1.0:0.15:deblock=-1,-1",
+            "film":    "-tune grain -x264-params {common}:aq-mode=3:aq-strength=1.3:psy-rd=1.2:0.2:no-deblock=1:ipratio=1.1",
+            "animation": "-tune animation -x264-params {common}:aq-mode=2:deblock=1,1:psy-rd=0.4:0.0:aq-strength=0.7"
+        }
+    },
+    # 'The Phantom' - Pushes x265 to its limits for maximum 10-bit quality/bitrate. VERY SLOW.
+    "THE_GHOST": {
+        "name": "The Ghost", "output_name": "Web.x265", "container": ".mp4",
+        "video_codec": "libx265", "rate_control_mode": "2pass_abr",
+        "video_kbps_levels": {"Lean": 2500, "Standard": 3500, "Prime Cut": 5000},
+        "vbv_bufsize_multiplier": 2.0, "target_resolution_name": "UHD",
+        "audio_codec": "libfdk_aac", "audio_options": "-vbr 4",
+        "base_options": {"preset": "slow", "threads": "0"},
+        "pix_fmt_10bit": "yuv420p10le",
+        "size_denoise_filter": "nlmeans=s=1:p=3:r=5", "size_sharpen_filter": "cas=strength=0.1",
+        "denoise_filter": "nlmeans=s=1:p=3:r=5", "sharpen_filter": "cas=strength=0.1",
+        "source_material_tuning": {
+            # Re-tuned for stability and quality. Enabled slow-firstpass.
+            "common_x265_params": "rd=4:rdoq-level=2:aq-mode=3:b-adapt=2:rc-lookahead=80:subme=5:keyint=360:slow-firstpass=1",
+            "clean":   "-tune fastdecode -x265-params {common}:psy-rd=1.5:psy-rdoq=1.0",
+            "modern":  "-tune fastdecode -x265-params {common}:psy-rd=2.0:psy-rdoq=1.5:aq-strength=1.1",
+            "film":    "-tune grain -x265-params {common}:psy-rd=2.0:psy-rdoq=1.0:aq-strength=1.2:deblock=-1,-1",
+            "animation": "-tune animation -x265-params {common}:bframes=12:deblock=1,1:psy-rd=0.4:aq-strength=0.7"
+        }
+    }
+}
+
+# --- Fast Encoding Presets ---
+FAST_PRESETS = {
+    # CRF-based for fast, high-quality x264 encodes.
+    "THE_HITMAN": {
+        "name": "The Hitman", "output_name": "Fast.x264", "container": ".mp4",
+        "video_codec": "libx264", "rate_control_mode": "crf", "target_resolution_name": "FHD",
+        "audio_codec": "libfdk_aac", "audio_options": "-vbr 5",
+        "crf_levels": {"Lean": 23, "Standard": 21, "Prime Cut": 19},
+        "base_options": {"preset": "fast", "profile:v": "high", "level": "4.1", "tune": "fastdecode"},
+        "pix_fmt_8bit": "yuv420p",
+        "size_denoise_filter": "nlmeans=s=1:p=3:r=5",
+        "size_sharpen_filter": "cas=strength=0.1",
+        "source_material_tuning": {
+            "common": "-x264-params keyint=360:min-keyint=1:bframes=3:ref=3:aq-mode=1:psy-rd=1.0:0.15:deblock=-1,-1:mbtree=1:qcomp=0.9:merange=48",
+            "animation": "-x264-params keyint=360:min-keyint=1:bframes=6:ref=5:deblock=1,1:psy-rd=0.4:0.0:aq-mode=1:aq-strength=0.7:mbtree=1:qcomp=0.9:merange=48"
+        }
+    },
+    # CRF-based for very fast, efficient 10-bit x265 encodes.
+    "THE_ROCKET": {
+        "name": "The Rocket", "output_name": "Fast.x265", "container": ".mp4",
+        "video_codec": "libx265", "rate_control_mode": "crf",
+        "crf_levels": {"Lean": 25, "Standard": 23, "Prime Cut": 21},
+        "target_resolution_name": "UHD",
+        "audio_codec": "libfdk_aac", "audio_options": "-vbr 4",
+        "base_options": {"preset": "faster", "tune": "fastdecode", "threads": "0"},
+        "pix_fmt_10bit": "yuv420p10le",
+        "size_denoise_filter": "nlmeans=s=1:p=3:r=5",
+        "size_sharpen_filter": "cas=strength=0.1",
+        "denoise_filter": "nlmeans=s=1:p=3:r=5",
+        "sharpen_filter": "cas=strength=0.1",
+        "source_material_tuning": {
+            "common_x265_params": "rd=4:rdoq-level=1:aq-mode=3:qg-size=8:b-adapt=2:rc-lookahead=80:subme=5:keyint=360:hist-scenecut=1:scenecut-aware-qp=1:merange=64:aq-strength=1.2:slow-firstpass=0",
+            "clean":   "-x265-params {common}:psy-rd=1.2:psy-rdoq=1.0:ipratio=1.1",
+            "modern":  "-x265-params {common}:psy-rd=1.8:psy-rdoq=1.8:ipratio=1.1",
+            "film":    "-x265-params {common}:psy-rd=2.2:psy-rdoq=4.0:deblock=-2,-2:no-cutree=1:ipratio=1.1",
+            "animation": "-x265-params {common}:bframes=10:deblock=1,1:psy-rd=0.4:aq-strength=0.7"
+        }
+    }
+}
+
+# --- Workflow Presets ---
+WORKFLOW_PRESETS = {
+    # CRF-based preset optimized for vertical social media (e.g., Instagram Reels).
+    "THE_HEIST": {
+        "name": "The Heist", "output_name": "Social", "container": ".mp4",
+        "video_codec": "libx264",
+        "rate_control_mode": "2pass_abr",
+        "video_kbps_levels": {"Lean": 3500, "Standard": 6500, "Prime Cut": 10000},
+        "bufsize_kb_multiplier": 2.0,
+        "target_w_override": 1080, "pix_fmt_8bit": "yuv420p",
+        "audio_codec": "libfdk_aac", "audio_options": "-b:a 192k",
+        "base_options": {"preset": "slow", "profile:v": "high", "level": "4.2", "tune": "fastdecode"},
+        "denoise_filter": "nlmeans=s=1:p=3:r=5",
+        "sharpen_filter": "cas=strength=0.8",
+        "source_material_tuning": {
+            "common": "-x264-params bframes=3:b-adapt=2:ref=4:aq-mode=1:aq-strength=1.2:psy-rd=1.1:0.25:mbtree=1:qcomp=0.9:merange=48:keyint=360:min-keyint=1"
+        }
+    },
+    # ABR-based preset for targeting a specific output file size.
+    "THE_JOB": {
+        "name": "The Job", "output_name": "Target_MB", "container": ".mp4",
+        "rate_control_mode": "2pass_abr", "default_target_mb": 199,
+        "min_bitrate_kbps": 100, "max_bitrate_kbps": 50000, "target_resolution_name": "HD",
+        "video_codec": "libx264",
+        "base_options": {"preset": "slow", "tune": "fastdecode"},
+        "pix_fmt_8bit": "yuv420p",
+        "source_material_tuning": {"common": ""},
+        "audio_codec": "libfdk_aac", "audio_options": "-b:a 128k", "audio_bitrate_kbps": 128,
+        "size_denoise_filter": "nlmeans=s=1:p=3:r=5",
+        "size_sharpen_filter": "cas=strength=0.1"
+    }
+}
+
+# --- Audio Codec Resolution (cross-platform) ---
+# Probes FFmpeg at import time; patches all presets to avoid hardcoded libfdk_aac failures.
+def _resolve_audio_codec() -> str:
+    """Return 'libfdk_aac' if available, else 'aac'."""
+    import subprocess
+    exe = "ffmpeg.exe" if os.name == "nt" else "ffmpeg"
+    # search plausible locations
+    candidates = [exe]
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent = os.path.dirname(script_dir)
+    for p in [os.path.join(parent, "bin", exe), os.path.join(parent, exe)]:
+        if os.path.exists(p):
+            candidates.insert(0, p)
+    for exe_path in candidates:
+        try:
+            r = subprocess.run([exe_path, "-hide_banner", "-encoders"],
+                               capture_output=True, text=True, timeout=5)
+            if "libfdk_aac" in r.stdout:
+                return "libfdk_aac"
+            if exe_path == exe:
+                break  # PATH search below is pointless if we tried PATH already
+        except Exception:
+            continue
+    return "aac"
+
+AUDIO_CODEC = _resolve_audio_codec()
+
+# Map libfdk_aac VBR levels to native aac quality (*actually* the option syntax)
+_VBR_TO_QA = {"5": "2", "4": "1", "3": "1"}
+
+def _translate_opts(opts: str) -> str:
+    """Translate encoder-specific options when falling back from libfdk_aac to aac."""
+    if AUDIO_CODEC == "aac":
+        import re
+        opts = re.sub(r'-vbr\s+(\d)', lambda m: f"-q:a {_VBR_TO_QA.get(m.group(1), '2')}", opts)
+    return opts
+
+# Patch all presets to use the detected codec and translated options
+for _d in (STANDARD_PRESETS, FAST_PRESETS, WORKFLOW_PRESETS):
+    for _p in _d.values():
+        if _p.get("audio_codec") == "libfdk_aac" and AUDIO_CODEC != "libfdk_aac":
+            _p["audio_codec"] = AUDIO_CODEC
+            _p["audio_options"] = _translate_opts(_p.get("audio_options", ""))
+
+
+# --- Resolution Definitions ---
+RESOLUTIONS = {
+    "HD":  {"width": 1280, "height": 720},
+    "FHD": {"width": 1920, "height": 1080},
+    "UHD": {"width": 3840, "height": 2160},
+    "FHD_PORTRAIT": {"width": 1080, "height": 1920}, # For vertical video
+}
