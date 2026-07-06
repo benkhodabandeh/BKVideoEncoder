@@ -12,11 +12,11 @@ Wrap x264, x265, and libfdk-aac into preset-based workflows — no CLI gymnastic
 ## Screenshots
 
 <p align="center">
-  <img src="screenshots/main_window.png" alt="Main window" width="45%">
-  <img src="screenshots/presets.png" alt="Preset selection" width="45%">
+  <img src="screenshots/main_window.png" alt="Main window" width="80%">
 </p>
 <p align="center">
-  <img src="screenshots/qc_tool.png" alt="VMAF Quality Control Tool" width="60%">
+  <img src="screenshots/presets.png" alt="Preset selection" width="45%">
+  <img src="screenshots/qc_tool.png" alt="VMAF Quality Control Tool" width="45%">
 </p>
 
 ---
