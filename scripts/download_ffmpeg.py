@@ -4,7 +4,14 @@
 Windows/Linux: extracts from BtbN FFmpeg-Builds release archive.
 macOS:         installs via Homebrew (pre-installed on GitHub runners).
 """
-import os, platform, shutil, subprocess, sys, urllib.request, zipfile, tarfile
+
+import platform
+import shutil
+import subprocess
+import sys
+import urllib.request
+import zipfile
+import tarfile
 from pathlib import Path
 
 BIN = Path(__file__).resolve().parent.parent / "bin"
@@ -12,8 +19,8 @@ BIN.mkdir(exist_ok=True)
 
 BTBN = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
 BUILDS = {
-    "Windows": ("ffmpeg-n7.1-latest-win64-gpl-7.1.zip",      "zip"),
-    "Linux":   ("ffmpeg-n7.1-latest-linux64-gpl-7.1.tar.xz", "tar.xz"),
+    "Windows": ("ffmpeg-n7.1-latest-win64-gpl-7.1.zip", "zip"),
+    "Linux": ("ffmpeg-n7.1-latest-linux64-gpl-7.1.tar.xz", "tar.xz"),
 }
 
 

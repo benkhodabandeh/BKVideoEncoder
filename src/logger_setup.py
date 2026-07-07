@@ -15,6 +15,7 @@ import config
 
 _logging_initialized = False
 
+
 def setup_logging() -> None:
     """
     Sets up logging to a file that is overwritten on each application launch
@@ -38,14 +39,16 @@ def setup_logging() -> None:
     log_filepath = "Disabled"
     try:
         # Prefer 'Documents' folder for user-accessibility
-        documents_path = os.path.join(os.path.expanduser('~'), 'Documents')
+        documents_path = os.path.join(os.path.expanduser("~"), "Documents")
         log_dir = os.path.join(documents_path, config.LOG_FOLDER_NAME)
         log_filename = f"{config.APP_NAME.replace(' ', '_').lower()}.log"
         log_filepath = os.path.join(log_dir, log_filename)
         os.makedirs(log_dir, exist_ok=True)
 
         # Use a standard FileHandler in 'write' mode ('w') to overwrite the log on each run
-        file_handler = logging.FileHandler(filename=log_filepath, mode='w', encoding='utf-8')
+        file_handler = logging.FileHandler(
+            filename=log_filepath, mode="w", encoding="utf-8"
+        )
         file_handler.setFormatter(formatter)
         root_logger.addHandler(file_handler)
     except Exception as e:
@@ -57,6 +60,7 @@ def setup_logging() -> None:
         # Handler for INFO and WARNING to stdout
         class InfoFilter(logging.Filter):
             """Filters records to allow only INFO and WARNING levels."""
+
             def filter(self, record):
                 return logging.INFO <= record.levelno <= logging.WARNING
 
@@ -71,8 +75,9 @@ def setup_logging() -> None:
         console_stderr.setFormatter(formatter)
         root_logger.addHandler(console_stderr)
     except Exception as e:
-        print(f"CRITICAL: Could not set up console logging. Error: {e}", file=sys.stderr)
-
+        print(
+            f"CRITICAL: Could not set up console logging. Error: {e}", file=sys.stderr
+        )
 
     _logging_initialized = True
 
