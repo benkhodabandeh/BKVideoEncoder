@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Cinema-grade FFmpeg encoding with a smooth Windows 11 desktop workflow.</strong><br>
+  <strong>Cinema-grade FFmpeg encoding with a smooth workflow.</strong><br>
   Preset-driven x264/x265 encoding, batch development, scene-aware tuning, preview stills, crop tools, metadata, and VMAF QC.
 </p>
 
@@ -35,16 +35,14 @@ BK Video Encoder is a professional creator-focused encoder front-end. It removes
 
 ## Screenshots
 
-> Add current screenshots to `screenshots/` and keep these filenames for a polished GitHub landing page.
-
 <p align="center">
-  <img src="screenshots/main-window.png" alt="Main window" width="880"><br>
+  <img src="screenshots/main_window.png" alt="Main window" width="880"><br>
   <em>Main encoding workspace</em>
 </p>
 
 <p align="center">
-  <img src="screenshots/preset-selection.png" alt="Preset selection" width="430">
-  <img src="screenshots/vmaf-qc.png" alt="VMAF QC tool" width="430">
+  <img src="screenshots/presets.png" alt="Preset selection" width="430">
+  <img src="screenshots/qc_tool.png" alt="VMAF QC tool" width="430">
 </p>
 
 ---
@@ -88,18 +86,6 @@ The portable build lands in `dist/`.
 
 ---
 
-## Recommended GitHub repository setup
-
-For a more premium project page:
-
-- Add the screenshots shown above using exact filenames.
-- Add a short demo GIF at `screenshots/demo.gif` and place it below the hero.
-- Enable GitHub Releases with checksums.
-- Add topics: `ffmpeg`, `x264`, `x265`, `video-encoder`, `customtkinter`, `windows-11`, `vmaf`, `batch-processing`.
-- Use the generated `logo.png`, `src/wgelogo.png`, and `src/icon.ico` from this premium patch.
-
----
-
 ## Development quality checks
 
 ```powershell
@@ -119,4 +105,4 @@ The BK Video Encoder source code is licensed under the GNU GPL v3. Bundled FFmpe
 
 ## Author
 
-Benyamin Khodabandeh — director, cinematographer, and creator of BK Video Encoder.
+Benyamin Khodabandeh — director, cinematographer, and creator of BAVE.
